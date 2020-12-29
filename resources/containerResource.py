@@ -1,6 +1,5 @@
 from flask_restful import Api, reqparse, Resource, abort
-from Main import db
-from Main.model.models import *
+from model.models import *
 
 
 container_parser = reqparse.RequestParser()

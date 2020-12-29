@@ -1,6 +1,5 @@
 from flask_restful import Api, reqparse, Resource, abort
-from Main import db
-from Main.model.models import *
+from model.models import *
 
 room_post_parser = reqparse.RequestParser()
 room_post_parser.add_argument('name', type=str, help='name of the room')

@@ -1,7 +1,11 @@
-from Main import db, ma
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from sqlalchemy import Column, String, Integer, ForeignKey
+from flask_sqlalchemy import SQLAlchemy
+from flask_marshmallow import Marshmallow
+
+db = SQLAlchemy()
+ma = Marshmallow()
 
 
 class Room(db.Model):
@@ -50,5 +54,3 @@ class ItemSchema(ma.SQLAlchemyAutoSchema):
         model = Item
         include_fk = True
 
-
-db.create_all()
