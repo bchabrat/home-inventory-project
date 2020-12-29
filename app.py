@@ -27,7 +27,3 @@ def create_app():
     api.add_resource(ItemResource, '/item/<string:item_name>')
 
     return app
-
-if __name__ == "__main__":
-    app = create_app()
-    app.run(debug= True)
