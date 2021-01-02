@@ -1,6 +1,6 @@
 from flask_restful import Api, reqparse, Resource, abort
 from model.models import *
-
+from . import auth
 
 container_parser = reqparse.RequestParser()
 container_parser.add_argument('name', type=str, help='name of the container')
@@ -21,6 +21,7 @@ def container_name_exists(container_name):
 
 # get a list of all the containers
 class AllContainerResource(Resource):
+    @auth.login_required
     def get(self):
         result = db.session.query(Container).all()
         return containers_schema.dump(result)
@@ -28,6 +29,7 @@ class AllContainerResource(Resource):
 
 # create, read, update and delete a container
 class ContainerResource(Resource):
+    @auth.login_required
     def post(self, container_name):
         if container_name_exists(container_name):
             abort(403, message="the name {} already exists".format(container_name))
@@ -37,12 +39,14 @@ class ContainerResource(Resource):
         db.session.commit()
         return 201
 
+    @auth.login_required
     def get(self, container_name):
         if not container_name_exists(container_name):
             abort(403, message="the room {} you are trying to get does not exists".format(container_name))
         result = db.session.query(Container).filter_by(name=container_name).one()
         return container_schema.dump(result)
 
+    @auth.login_required
     def put(self, container_name):
         if not container_name_exists(container_name):
             abort(403, message="the container {} you are trying to update does not exists".format(container_name))
@@ -59,6 +63,7 @@ class ContainerResource(Resource):
         db.session.add(container_to_update)
         db.session.commit()
 
+    @auth.login_required
     def delete(self, container_name):
         if not container_name_exists(container_name):
             abort(403, message="the container {} you are trying to delete does not exists".format(container_name))
