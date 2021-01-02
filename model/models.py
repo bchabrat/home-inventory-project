@@ -21,6 +21,8 @@ class User(db.Model):
     password_hash = db.Column(db.String(255))
 
     rooms = relationship("Room", back_populates="user")
+    containers = relationship("Container", back_populates="user")
+    items = relationship("Item", back_populates="user")
 
     def hash_password(self, password):
         self.password_hash = pwd_context.encrypt(password)
@@ -65,8 +67,11 @@ class Container(db.Model):
     name = Column(String)
     room_id = Column(Integer, ForeignKey('rooms.id'))
     container_id = Column(Integer, ForeignKey('containers.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     room = relationship("Room", back_populates="containers")
     items = relationship("Item", back_populates='container')
+    user = relationship("User", back_populates="containers")
+
     # container = relationship("Container", back_populates='containers')
 
 
@@ -76,8 +81,10 @@ class Item(db.Model):
     name = Column(String)
     room_id = Column(Integer, ForeignKey('rooms.id'))
     container_id = Column(Integer, ForeignKey('containers.id'))
+    user_id = Column(Integer, ForeignKey('users.id'))
     room = relationship("Room", back_populates="items")
     container = relationship("Container", back_populates='items')
+    user = relationship("User", back_populates="items")
 
 
 class RoomSchema(ma.SQLAlchemyAutoSchema):
