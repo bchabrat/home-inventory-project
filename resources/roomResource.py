@@ -68,6 +68,7 @@ class RoomResource(Resource):
     @auth.login_required
     def delete(self):
         args = room_parser.parse_args()
+        print(args)
         if not room_id_exists(args['id']):
             abort(403, message="the room {} you are trying to delete does not exists".format(args['name']))
         room_to_delete = db.session.query(Room).get(args['id'])

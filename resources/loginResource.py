@@ -1,4 +1,4 @@
-from flask import g,jsonify
+from flask import g,jsonify,abort
 from flask_restful import Api, reqparse, Resource, abort
 from model.models import *
 from . import auth
@@ -6,6 +6,14 @@ from . import auth
 login_parser = reqparse.RequestParser()
 login_parser.add_argument('username', type=str)
 login_parser.add_argument('password', type=str)
+
+def verify_password(username,password):
+    user = User.query.filter_by(username=username).first()
+    if not user or not user.verify_password(password):
+        return False
+    g.user = user
+    return True
+
 
 
 user_schema = UserSchema()
@@ -28,9 +36,17 @@ class NewUserResource(Resource):
 
 
 class TokenResource(Resource):
-    @auth.login_required
-    def get(self):
-        token = g.user.generate_auth_token()
-        return jsonify({'token': token.decode('ascii')})
+    def post(self):
+        args = login_parser.parse_args()
+        verified = verify_password(args['username'],args['password'])
+        if verified == True:
+            token = g.user.generate_auth_token()
+            return {'token': token.decode('ascii')}
+        abort(204)
+
+
+
+
+
 
 
