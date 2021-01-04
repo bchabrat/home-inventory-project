@@ -42,7 +42,7 @@ class TokenResource(Resource):
         if verified == True:
             token = g.user.generate_auth_token()
             return {'token': token.decode('ascii')}
-        abort(204)
+        abort(401)
 
 
 
