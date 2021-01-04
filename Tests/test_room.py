@@ -2,9 +2,9 @@ import requests
 
 payload = {'name': 'Bathroom'}
 
-post_r = requests.post('http://127.0.0.1:8000/room', auth=('bastien','chabrat'), params=payload)
-print("status code for POST:",post_r.status_code)
-r = requests.get('http://127.0.0.1:8000/list_rooms', auth=('bastien','chabrat'))
+# post_r = requests.post('http://127.0.0.1:8000/room', auth=('bastien','chabrat'), params=payload)
+# print("status code for POST:",post_r.status_code)
+r = requests.get('https://home-inventory-project-be.herokuapp.com/list_rooms', auth=('bastien','chabrat'))
 print("status code for GET:",r.status_code)
 print("JSON for GET:",r.json())
 #

@@ -4,10 +4,12 @@ payload = {'name':'plastic box',
            'new_name':'plastic box changed',
            'id':3,
            'room_id':1}
+
 payload2 = {'name':'metal box',
            'id':4,
             'container_id':3,
            'room_id':1}
+
 post_r = requests.post('http://127.0.0.1:8000/container', auth=('bastien','chabrat'), params=payload)
 post_r = requests.post('http://127.0.0.1:8000/container', auth=('bastien','chabrat'), params=payload2)
 
