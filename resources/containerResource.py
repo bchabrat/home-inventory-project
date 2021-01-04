@@ -30,7 +30,7 @@ def container_id_exists(container_id):
 class AllContainerResource(Resource):
     @auth.login_required
     def get(self):
-        result = db.session.query(Container).filter_by(user_id=g.user.id).all()
+        result = db.session.query(Container).filter_by(user_id=g.user.id).join(Containers.room).all()
         return containers_schema.dump(result)
 
 
