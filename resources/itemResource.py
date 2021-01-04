@@ -32,7 +32,7 @@ def item_id_exists(item_id):
 class AllItemResource(Resource):
     @auth.login_required
     def get(self):
-        result = db.session.query(Item).filter_by(user_id=g.user.id).join(Items.room).all()
+        result = db.session.query(Item).filter_by(user_id=g.user.id).join(Item.room).all()
         return items_schema.dump(result)
 
 
