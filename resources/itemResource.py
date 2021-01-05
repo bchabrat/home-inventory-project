@@ -12,7 +12,7 @@ item_parser.add_argument('container_id', type=int, help='id of the container whe
 
 
 item_schema = ItemSchema()
-items_schema = ItemSchema(many=True)
+items_schema = ItemContainerRoomSchema(many=True)
 
 
 def item_name_exits(item_name):
@@ -32,8 +32,12 @@ def item_id_exists(item_id):
 class AllItemResource(Resource):
     @auth.login_required
     def get(self):
-        result = db.session.query(Item).filter_by(user_id=g.user.id).join(Item.room).all()
+        pre_result = db.session.query(Item, Container, Room).outerjoin(Container,Container.id == Item.container_id).outerjoin(Room,Room.id == Item.room_id).filter_by(user_id=g.user.id).all()
+        print(pre_result)
+        result = [{'element':x[0], 'container':x[1], 'room':x[2]} for x in pre_result]
+        print(result)
         return items_schema.dump(result)
+
 
 
 # create, read, update and delete an item

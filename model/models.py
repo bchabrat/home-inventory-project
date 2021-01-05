@@ -7,6 +7,8 @@ from flask_marshmallow import Marshmallow
 from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import (TimedJSONWebSignatureSerializer
                           as Serializer, BadSignature, SignatureExpired)
+from marshmallow import fields
+from marshmallow_sqlalchemy.fields import Nested
 
 
 db = SQLAlchemy()
@@ -104,8 +106,14 @@ class ItemSchema(ma.SQLAlchemyAutoSchema):
         model = Item
         include_fk = True
 
+
 class UserSchema(ma.SQLAlchemyAutoSchema):
     class Meta:
         model = User
         include_fk = True
 
+
+class ItemContainerRoomSchema(ma.Schema):
+    element = fields.Nested(ItemSchema)
+    container = fields.Nested(ContainerSchema)
+    room = fields.Nested(RoomSchema)

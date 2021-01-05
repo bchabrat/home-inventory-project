@@ -1,6 +1,8 @@
+from flask import jsonify
 from flask_restful import Api, reqparse, Resource, abort
 from model.models import *
 from . import auth
+from sqlalchemy.orm import aliased
 
 container_parser = reqparse.RequestParser()
 container_parser.add_argument('id', type=int)
@@ -10,7 +12,8 @@ container_parser.add_argument('room_id', type=int, help='id of the room where th
 container_parser.add_argument('container_id', type=int, help='id of the container where the container is located')
 
 container_schema = ContainerSchema()
-containers_schema = ContainerSchema(many=True)
+containers_schema = ItemContainerRoomSchema(many=True)
+
 
 
 def container_name_exists(container_name):
@@ -30,7 +33,9 @@ def container_id_exists(container_id):
 class AllContainerResource(Resource):
     @auth.login_required
     def get(self):
-        result = db.session.query(Container).filter_by(user_id=g.user.id).join(Container.room).all()
+        container1 = aliased(Container)
+        pre_result = db.session.query(Container,container1,Room).outerjoin(container1,container1.id == Container.container_id).outerjoin(Room,Room.id == Container.room_id).filter_by(user_id=g.user.id).all()
+        result = [{'element':x[0],'container':x[1],'room':x[2]} for x in pre_result]
         return containers_schema.dump(result)
 
 
